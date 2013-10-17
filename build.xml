@@ -1,0 +1,52 @@
+
+<project>
+    <property name="project-name" value="ScoreService" />
+    <property name="src.dir" value="src" />
+    <property name="build.dir" value="build" />
+    <property name="classes.dir" value="${build.dir}/classes" />
+    <property name="lib.dir" value="lib" />
+    <property name="jar.dir" value="${build.dir}/jar" />
+    <property name="main-class" value="edu.arizona.eller.mis.fiveoseven.MainHarness" />
+    <filelist id="properties.files" dir="${src.dir}" >
+        <file name="edu/arizona/eller/mis/fiveoseven/files.properties" />
+        <file name="weeklyGames.txt" />
+        <file name="scores1.txt" />
+        <file name="scores2.txt" />
+    </filelist>
+
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar" />
+    </path>
+
+    <target name="clean">
+        <delete dir="${jar.dir}" />
+        <delete dir="${build.dir}" />
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}" />
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
+    </target>
+
+    <target name="jar">
+        <mkdir dir="${jar.dir}" />
+        <jar destfile="${jar.dir}/${project-name}.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="edu.arizona.eller.mis.fiveoseven.MainHarness.class" />
+            </manifest>
+            <filelist refid="properties.files" />
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+        <java fork="true" classname="${main-class}">
+            <classpath>
+                <path refid="classpath" />
+                <path location="${jar.dir}/${project-name}.jar" />
+            </classpath>
+        </java>
+    </target>
+
+    <target name="clean-build" depends="clean, jar" />
+    <target name="main" depends="clean, run" />
+</project>
